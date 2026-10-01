@@ -16,6 +16,31 @@ const timeSlots = [
   "16:00",
 ];
 
+function formatPhone(value) {
+  // Remove tudo que não for número e limita a 11 dígitos
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+
+  if (digits.length === 0) {
+    return "";
+  }
+
+  if (digits.length <= 2) {
+    return `(${digits}`;
+  }
+
+  const ddd = digits.slice(0, 2);
+  const number = digits.slice(2);
+
+  // Celular: 5 dígitos + 4
+  // Fixo: 4 dígitos + 4
+  const prefixLength = digits.length > 10 ? 5 : 4;
+
+  const firstPart = number.slice(0, prefixLength);
+  const secondPart = number.slice(prefixLength);
+
+  return `(${ddd}) ${firstPart}${secondPart ? `-${secondPart}` : ""}`;
+}
+
 function Booking() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("");
@@ -221,8 +246,13 @@ function Booking() {
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(event) => setPhone(event.target.value)}
-                      placeholder="(11) 99999-9999"
+                      onChange={(event) =>
+                        setPhone(formatPhone(event.target.value))
+                      }
+                      placeholder="(31) 98930-3600"
+                      maxLength={15}
+                      inputMode="numeric"
+                      autoComplete="tel"
                       required
                     />
                   </label>
